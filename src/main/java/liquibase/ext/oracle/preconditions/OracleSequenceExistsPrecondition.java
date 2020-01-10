@@ -39,8 +39,8 @@ public class OracleSequenceExistsPrecondition extends OraclePrecondition<Sequenc
 	@Override
 	protected SequenceExistsPrecondition fallback( Database database ) {
 		SequenceExistsPrecondition fallback = new SequenceExistsPrecondition();
-		fallback.setCatalogName( database.getLiquibaseCatalogName() );
-		fallback.setSchemaName( database.getLiquibaseSchemaName() );
+		fallback.setCatalogName( getCatalogName() );
+		fallback.setSchemaName( getSchemaName() );
 		fallback.setSequenceName( getSequenceName() );
 		return fallback;
 	}
@@ -73,10 +73,10 @@ public class OracleSequenceExistsPrecondition extends OraclePrecondition<Sequenc
 				final String sql = "select count(*) from all_sequences where upper(sequence_name) = upper(?) and upper(sequence_owner) = upper(?)";
 				ps = connection.prepareStatement( sql );
 				ps.setString( 1, getSequenceName() );
-				ps.setString( 2, database.getLiquibaseSchemaName() );
+				ps.setString( 2, getSchemaName() );
 				rs = ps.executeQuery();
 				if ( !rs.next() || rs.getInt( 1 ) <= 0 ) {
-					throw new PreconditionFailedException( String.format( "The sequence '%s.%s' was not found.", database.getLiquibaseSchemaName(), getSequenceName() ), changeLog, this );
+					throw new PreconditionFailedException( String.format( "The sequence '%s.%s' was not found.", getSchemaName(), getSequenceName() ), changeLog, this );
 				}
 			} catch ( SQLException e ) {
 				throw new PreconditionErrorException( e, changeLog, this );

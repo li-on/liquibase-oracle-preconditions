@@ -5,6 +5,8 @@
 		<xsd:complexType>
 			<xsd:attribute name="tableName" type="xsd:string" />
 			<xsd:attribute name="constraintName" type="xsd:string" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
@@ -12,6 +14,8 @@
 		<xsd:complexType>
 			<xsd:attribute name="tableName" type="xsd:string" use="required" />
 			<xsd:attribute name="columnName" type="xsd:string" use="required" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
@@ -19,6 +23,8 @@
 		<xsd:complexType>
 			<xsd:attribute name="tableName" type="xsd:string" />
 			<xsd:attribute name="constraintName" type="xsd:string" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
@@ -27,6 +33,8 @@
 			<xsd:attribute name="indexName" type="xsd:string" />
 			<xsd:attribute name="tableName" type="xsd:string" />
 			<xsd:attribute name="columnNames" type="xsd:string" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
@@ -34,18 +42,24 @@
 		<xsd:complexType>
 			<xsd:attribute name="primaryKeyName" type="xsd:string" />
 			<xsd:attribute name="tableName" type="xsd:string" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
 	<xsd:element name="oracleSequenceExists">
 		<xsd:complexType>
 			<xsd:attribute name="sequenceName" type="xsd:string" use="required" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
 	<xsd:element name="oracleTableExists">
 		<xsd:complexType>
 			<xsd:attribute name="tableName" type="xsd:string" use="required" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
@@ -53,18 +67,24 @@
 		<xsd:complexType>
 			<xsd:attribute name="tableName" type="xsd:string" />
 			<xsd:attribute name="constraintName" type="xsd:string" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
 	<xsd:element name="oracleViewExists">
 		<xsd:complexType>
 			<xsd:attribute name="viewName" type="xsd:string" use="required" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
 	<xsd:element name="oracleMaterializedViewExists">
 		<xsd:complexType>
 			<xsd:attribute name="viewName" type="xsd:string" use="required" />
+			<xsd:attribute name="schemaName" type="xsd:string" />
+			<xsd:attribute name="catalogName" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 

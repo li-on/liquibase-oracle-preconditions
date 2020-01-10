@@ -63,7 +63,7 @@ public class OracleMaterializedViewExistsPrecondition extends OraclePrecondition
 
 	public void check( Database database, DatabaseChangeLog changeLog, ChangeSet changeSet, ChangeExecListener changeExecListener ) throws PreconditionFailedException, PreconditionErrorException {
 		if ( ! check( database ) ) {
-			throw new PreconditionFailedException( String.format( "The view '%s.%s' was not found.", database.getLiquibaseSchemaName(), getViewName() ), changeLog, this );
+			throw new PreconditionFailedException( String.format( "The view '%s.%s' was not found.", getSchemaName(), getViewName() ), changeLog, this );
 		}
 	}
 	
@@ -77,7 +77,7 @@ public class OracleMaterializedViewExistsPrecondition extends OraclePrecondition
 				final String sql = "select count(*) from all_mviews where upper(mview_name) = upper(?) and upper(owner) = upper(?)";
 				ps = connection.prepareStatement( sql );
 				ps.setString( 1, getViewName() );
-				ps.setString( 2, database.getLiquibaseSchemaName() );
+				ps.setString( 2, getSchemaName() );
 				rs = ps.executeQuery();
 				if ( !rs.next() || rs.getInt( 1 ) <= 0 ) {
 					return false;

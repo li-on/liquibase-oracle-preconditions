@@ -87,10 +87,10 @@ public class OracleUniqueConstraintExistsPrecondition extends OraclePrecondition
 				ps = connection.prepareStatement( sql );
 				ps.setString( 1, getConstraintName() );
 				ps.setString( 2, getTableName() );
-				ps.setString( 3, database.getLiquibaseSchemaName() );
+				ps.setString( 3, getSchemaName() );
 				rs = ps.executeQuery();
 				if ( !rs.next() || rs.getInt( 1 ) <= 0 ) {
-					throw new PreconditionFailedException( String.format( "The primary key '%s' was not found on the table '%s.%s'.", getConstraintName(), database.getLiquibaseSchemaName(), getTableName() ), changeLog, this );
+					throw new PreconditionFailedException( String.format( "The primary key '%s' was not found on the table '%s.%s'.", getConstraintName(), getSchemaName(), getTableName() ), changeLog, this );
 				}
 			} catch ( SQLException e ) {
 				throw new PreconditionErrorException( e, changeLog, this );

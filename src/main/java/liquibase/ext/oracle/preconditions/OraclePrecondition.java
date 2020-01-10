@@ -19,7 +19,25 @@ import liquibase.resource.ResourceAccessor;
 public abstract class OraclePrecondition<R extends Precondition> implements Precondition {
 
 	protected R redirect = null;
+	protected String schemaName;
+	protected String catalogName;
 	
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	public void setSchemaName( String schemaName ) {
+		this.schemaName = schemaName;
+	}
+	
+	public String getCatalogName() {
+		return catalogName;
+	}
+
+	public void setCatalogName( String catalogName ) {
+		this.catalogName = catalogName;
+	}
+		
 	void closeSilently( PreparedStatement ps ) {
 		if ( ps != null ) {
 			try {
@@ -43,6 +61,13 @@ public abstract class OraclePrecondition<R extends Precondition> implements Prec
 	}
 	
 	public void load( ParsedNode parsedNode, ResourceAccessor resourceAccessor ) throws ParsedNodeException {
+		this.schemaName = parsedNode.getChildValue(null, "schemaName", String.class);
+		this.catalogName = parsedNode.getChildValue(null, "catalogName", String.class);
+		if(this.schemaName==null || this.schemaName==""){
+			if(this.catalogName!=null && this.catalogName!=""){
+				this.schemaName=this.catalogName;
+			}
+		}
 	}
 
 	public String getSerializedObjectName() {

@@ -39,8 +39,8 @@ public class OracleTableExistsPrecondition extends OraclePrecondition<TableExist
 	@Override
 	protected TableExistsPrecondition fallback( Database database ) {
 		TableExistsPrecondition redirect = new TableExistsPrecondition();
-		redirect.setCatalogName( database.getLiquibaseCatalogName() );
-		redirect.setSchemaName( database.getLiquibaseSchemaName() );
+		redirect.setCatalogName( getCatalogName() );
+		redirect.setSchemaName( getSchemaName() );
 		redirect.setTableName( getTableName() );
 		return redirect;
 	}
@@ -73,10 +73,10 @@ public class OracleTableExistsPrecondition extends OraclePrecondition<TableExist
 				final String sql = "select count(*) from all_tables where upper(table_name) = upper(?) and upper(owner) = upper(?)";
 				ps = connection.prepareStatement( sql );
 				ps.setString( 1, getTableName() );
-				ps.setString( 2, database.getLiquibaseSchemaName() );
+				ps.setString( 2, getSchemaName() );
 				rs = ps.executeQuery();
 				if ( !rs.next() || rs.getInt( 1 ) <= 0 ) {
-					throw new PreconditionFailedException( String.format( "The table '%s.%s' was not found.", database.getLiquibaseSchemaName(), getTableName() ), changeLog, this );
+					throw new PreconditionFailedException( String.format( "The table '%s.%s' was not found.", getSchemaName(), getTableName() ), changeLog, this );
 				}
 			} catch ( SQLException e ) {
 				throw new PreconditionErrorException( e, changeLog, this );

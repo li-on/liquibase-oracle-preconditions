@@ -23,7 +23,7 @@ import liquibase.resource.ResourceAccessor;
 public class OracleViewExistsPrecondition extends OraclePrecondition<ViewExistsPrecondition> {
 
 	private String viewName;
-
+	
 	public String getViewName() {
 		return viewName;
 	}
@@ -31,7 +31,7 @@ public class OracleViewExistsPrecondition extends OraclePrecondition<ViewExistsP
 	public void setViewName( String viewName ) {
 		this.viewName = viewName;
 	}
-
+	
 	public String getName() {
 		return "oracleViewExists";
 	}
@@ -57,8 +57,8 @@ public class OracleViewExistsPrecondition extends OraclePrecondition<ViewExistsP
 	@Override
 	protected ViewExistsPrecondition fallback( Database database ) {
 		ViewExistsPrecondition fallback = new ViewExistsPrecondition();
-		fallback.setCatalogName( database.getLiquibaseCatalogName() );
-		fallback.setSchemaName( database.getLiquibaseSchemaName() );
+		fallback.setCatalogName( getCatalogName() );
+		fallback.setSchemaName( getSchemaName() );
 		fallback.setViewName( getViewName() );
 		return fallback;
 	}
@@ -73,10 +73,10 @@ public class OracleViewExistsPrecondition extends OraclePrecondition<ViewExistsP
 				final String sql = "select count(*) from all_views where upper(view_name) = upper(?) and upper(owner) = upper(?)";
 				ps = connection.prepareStatement( sql );
 				ps.setString( 1, getViewName() );
-				ps.setString( 2, database.getLiquibaseSchemaName() );
+				ps.setString( 2, getSchemaName() );
 				rs = ps.executeQuery();
 				if ( !rs.next() || rs.getInt( 1 ) <= 0 ) {
-					throw new PreconditionFailedException( String.format( "The view '%s.%s' was not found.", database.getLiquibaseSchemaName(), getViewName() ), changeLog, this );
+					throw new PreconditionFailedException( String.format( "The view '%s.%s' was not found.", getSchemaName(), getViewName() ), changeLog, this );
 				}
 			} catch ( SQLException e ) {
 				throw new PreconditionErrorException( e, changeLog, this );
@@ -94,6 +94,6 @@ public class OracleViewExistsPrecondition extends OraclePrecondition<ViewExistsP
 	@Override
 	public void load( ParsedNode parsedNode, ResourceAccessor resourceAccessor ) throws ParsedNodeException {
 		super.load( parsedNode, resourceAccessor );
-    this.viewName = parsedNode.getChildValue(null, "viewName", String.class);
+    	this.viewName = parsedNode.getChildValue(null, "viewName", String.class);
 	}
 }

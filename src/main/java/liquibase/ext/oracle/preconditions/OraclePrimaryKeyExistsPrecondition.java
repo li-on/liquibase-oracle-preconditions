@@ -53,8 +53,8 @@ public class OraclePrimaryKeyExistsPrecondition extends OraclePrecondition<Prima
 	@Override
 	protected PrimaryKeyExistsPrecondition fallback( Database database ) {
 		PrimaryKeyExistsPrecondition fallback = new PrimaryKeyExistsPrecondition();
-		fallback.setCatalogName( database.getLiquibaseCatalogName() );
-		fallback.setSchemaName( database.getLiquibaseSchemaName() );
+		fallback.setCatalogName( getCatalogName() );
+		fallback.setSchemaName( getSchemaName() );
 		fallback.setTableName( getTableName() );
 		fallback.setPrimaryKeyName( getPrimaryKeyName() );
 		return fallback;
@@ -96,17 +96,17 @@ public class OraclePrimaryKeyExistsPrecondition extends OraclePrecondition<Prima
 				final String sql = "select constraint_name from all_constraints where table_name = upper(?) and upper(owner) = upper(?) and constraint_type = 'P'";
 				ps = connection.prepareStatement( sql );
 				ps.setString( 1, getTableName() );
-				ps.setString( 2, database.getLiquibaseSchemaName() );
+				ps.setString( 2, getSchemaName() );
 				rs = ps.executeQuery();
 				
 				if ( !rs.next() ) {
-					throw new PreconditionFailedException( String.format( "The primary key '%s' was not found on the table '%s.%s'.", getPrimaryKeyName(), database.getLiquibaseSchemaName(), getTableName() ), changeLog, this );
+					throw new PreconditionFailedException( String.format( "The primary key '%s' was not found on the table '%s.%s'.", getPrimaryKeyName(), getSchemaName(), getTableName() ), changeLog, this );
 				} else {
 					String name = rs.getString( 1 );
 					if ( getPrimaryKeyName() != null && getPrimaryKeyName().length() > 0 ) {
 						// In Liquibase 3.6.3 the requirement is that a primary key is present. It does not have to share the same name as the names are generated and provided by the database.
 						if ( ! name.equalsIgnoreCase( getPrimaryKeyName() ) ) {
-							LOG.warning( String.format( "The primary key '%s' was not found on the table '%s.%s', but instead a primary key '%s' was found.", getPrimaryKeyName(), database.getLiquibaseSchemaName(), getTableName(), name ) );
+							LOG.warning( String.format( "The primary key '%s' was not found on the table '%s.%s', but instead a primary key '%s' was found.", getPrimaryKeyName(), getSchemaName(), getTableName(), name ) );
 						}
 					}
 				}

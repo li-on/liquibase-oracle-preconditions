@@ -62,8 +62,8 @@ public class OracleIndexExistsPrecondition extends OraclePrecondition<IndexExist
 	@Override
 	protected IndexExistsPrecondition fallback( Database database ) {
 		IndexExistsPrecondition fallback = new IndexExistsPrecondition();
-		fallback.setCatalogName( database.getLiquibaseCatalogName() );
-		fallback.setSchemaName( database.getLiquibaseSchemaName() );
+		fallback.setCatalogName( getCatalogName() );
+		fallback.setSchemaName( getSchemaName() );
 		fallback.setIndexName( getIndexName() );
 		fallback.setTableName( getTableName() );
 		fallback.setColumnNames( getColumnNames() );
@@ -101,19 +101,19 @@ public class OracleIndexExistsPrecondition extends OraclePrecondition<IndexExist
 			ResultSet rs = null;
 			try {
 				if ( getIndexName() != null ) {
-					final String sql = "select count(*) from all_indexes i join dual d on upper(i.index_name) = upper(?) and upper(i.owner) = upper(?) left join all_constraints c on i.index_name = c.constraint_name where c.constraint_name is null";
+					final String sql = "select count(*) from all_indexes i where upper(i.index_name) = upper(?) and upper(i.owner) = upper(?)";
 					ps = connection.prepareStatement( sql );
 					ps.setString( 1, getIndexName() );
-					ps.setString( 2, database.getLiquibaseSchemaName() );
+					ps.setString( 2, getSchemaName() );
 					rs = ps.executeQuery();
 					if ( !rs.next() || rs.getInt( 1 ) <= 0 ) {
-						throw new PreconditionFailedException( String.format( "The index '%s.%s' was not found.", database.getLiquibaseSchemaName(), getIndexName() ), changeLog, this );
+						throw new PreconditionFailedException( String.format( "The index '%s.%s' was not found.", getSchemaName(), getIndexName() ), changeLog, this );
 					}
 				} else {
-					final String sql = "select i.index_name, i.column_name from ( select * from all_ind_columns where upper(table_name) = upper (?) and upper(index_owner) = upper(?) ) i left join all_constraints c on i.index_name = c.constraint_name where c.constraint_name is null";
+					final String sql = "select i.index_name, i.column_name from ( select * from all_ind_columns where upper(table_name) = upper (?) and upper(index_owner) = upper(?) ) i";
 					ps = connection.prepareStatement( sql );
 					ps.setString( 1, getTableName() );
-					ps.setString( 2, database.getLiquibaseSchemaName() );
+					ps.setString( 2, getSchemaName() );
 					rs = ps.executeQuery();
 	
 					Map<String, List<String>> columnsMap = new HashMap<String, List<String>>();
@@ -139,7 +139,7 @@ public class OracleIndexExistsPrecondition extends OraclePrecondition<IndexExist
 							}
 						}
 					}
-					throw new PreconditionFailedException( String.format( "No index was found on table '%s.%s' with columns '%s'.", database.getLiquibaseSchemaName(), getTableName(), getColumnNames() ), changeLog, this );
+					throw new PreconditionFailedException( String.format( "No index was found on table '%s.%s' with columns '%s'.", getSchemaName(), getTableName(), getColumnNames() ), changeLog, this );
 				}
 			} catch ( SQLException e ) {
 				throw new PreconditionErrorException( e, changeLog, this );
